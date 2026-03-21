@@ -108,6 +108,7 @@ echo "  .__                         __  .__
     echo "-lspm <- list supported package managers"
     echo "-oed <- opens your editor"
     echo "-tsrc <- opens your editor inside source code of chroctl"
+    echo "-cmus <- cmus specific flags, run chroctl -h --cmus for more info"
     fi 
     ;;
 
