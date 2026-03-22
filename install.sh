@@ -4,11 +4,8 @@
 
 check_deps() {
   local missing=()
-  for tool in foot cmus nvim swww; do
+  for tool in foot cmus neovim swww; do
     if ! command -v "$tool" &> /dev/null; then
-      if [[ "$tool" == "nvim" ]] && command -v neovim &> /dev/null; then
-            continue 
-      fi
       missing+=("$tool")
     fi
   done
