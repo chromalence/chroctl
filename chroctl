@@ -75,7 +75,7 @@ source "$conf"
 # THE FAT CASE BLOCK #
 ######################
 case "$1" in   
-  -h) # help
+  h) # help
     if [[ $2 == "--cmus" ]]; then 
 echo "  .__                         __  .__   
   ____ |  |_________  ____   _____/  |_|  |  
