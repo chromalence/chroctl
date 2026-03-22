@@ -25,8 +25,6 @@
 # note that you might still need confirmation for sudo!
 #
 
-[ "$EUID" -ne 0 ] && alias sudo='sudo ' # just so your alias works 
-
 updsys() {
   if command -v pacman >/dev/null; then
     sudo pacman -Syu --noconfirm
@@ -51,7 +49,18 @@ elif command -v dnf >/dev/null; then
   packagemanager=(sudo dnf install -y) 
 elif command -v xbps-install >/dev/null; then 
   packagemanager=(sudo xbps-install -y)
+elif command -v emerge >/dev/null; then 
+  packagemanager=(sudo emerge -q -y)
+elif command -v zypper >/dev/null; then 
+  packagemanager=(sudo zypper install -y)
 fi
+
+checkpkg() {
+  if [[ -z "${packagemanager[*]}" ]]; then
+    echo "no supported package manager found"
+    exit 1
+  fi
+}
 
 # standard error command 
 regerr="*** syntax error! *** try $0 -man instead"
@@ -102,7 +111,7 @@ echo "  .__                         __  .__
     echo ""
     echo "-h <- makes this show up"
     echo "-cwp <- shuffles wallpaper"
-    echo "-gnct <- gets nct"
+    echo "-nct <- gets nct"
     echo "-upd <- updates full system, checks for your package manager"
     echo "-grab <- gets a package, also checks for your package manager"
     echo "-lspm <- list supported package managers"
@@ -115,28 +124,30 @@ echo "  .__                         __  .__
 
   -cwp) # change wallpaper 
     notify-send "shuffling walls.."
-    cwpimg=$(find $wallpath -type f | shuf -n 1)
+    cwpimg=$(find "$wallpath" -type f | shuf -n 1)
     swww img "$cwpimg"
     notify-send "changed wallpaper to $cwpimg successfully!"
     ;;
 
-  -gnct) # get nct  
+  -nct) # get nct  
     notify-send "getting nct function $2.."
-    nct $2 && notify-send "success!"
+    nct "$2" && notify-send "success!"
     ;;
 
-  -grab) # get package 
+  -grab) # get package
+    checkpkg
     shift
     if [[ $# -eq 0 ]]; then
         echo "$regerr"
         exit 1
       else 
-        notify-send "getting package(s): $@"
+        notify-send "getting package(s): $*"
         "${packagemanager[@]}" "$@" && notify-send "success!"
     fi 
     ;;
 
   -upd) # update system 
+    checkpkg
     notify-send "updating system.."
     updsys && notify-send "success!"
     ;;
@@ -214,7 +225,7 @@ echo "  .__                         __  .__
         cmus-remote -s && notify-send "stopped cmus"
         ;;
       --q) # quit 
-        pkill -9 cmus && notify-send "quitted cmus"
+        pkill cmus && notify-send "quitted cmus"
         ;; 
       --pws) # pause / resume
         cmus-remote -u && notify-send "paused/resumed cmus"

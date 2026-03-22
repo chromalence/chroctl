@@ -23,7 +23,7 @@ check_deps() {
     elif command -v dnf &> /dev/null; then
       sudo dnf install "${missing[@]}"
     elif command -v xbps-install &> /dev/null; then
-      sudo xbps-install -S "${missing[@]}"
+      sudo xbps-install "${missing[@]}"
     elif command -v zypper &> /dev/null; then
       sudo zypper install "${missing[@]}"
     elif command -v emerge &> /dev/null; then
@@ -41,7 +41,7 @@ check_deps() {
 
 # make config 
 
-mkdir -p $HOME/.config/chroctl/ 
+mkdir -p "$HOME/.config/chroctl/" 
 
 cp chroctl.conf ~/.config/chroctl/chroctl.conf
 # dependency check 
@@ -51,7 +51,7 @@ echo "or, if it breaks, edit the source code at /usr/local/bin/chroctl"
 echo ""
 echo "dependency list: foot, cmus, nvim, swww"
 echo "i expect you to already have a notification daemon like dunst, mako or swaync."
-read hcd_input
+read -r hcd_input
 
 if [[ $hcd_input == "y" ]]; then   
   check_deps
@@ -62,6 +62,5 @@ fi
 # finalizing, installing
 
 echo "installing chroctl to /usr/local/bin.."
-sudo cp chroctl /usr/local/bin/chroctl && 
-sudo chmod +x /usr/local/bin/chroctl && 
+sudo install -Dm755 chroctl /usr/local/bin/chroctl
 echo "done. try chroctl -h now"
