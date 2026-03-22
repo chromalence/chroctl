@@ -63,7 +63,7 @@ checkpkg() {
 }
 
 # standard error command 
-regerr="*** syntax error! *** try $0 -man instead"
+regerr="*** syntax error! *** try $0 h instead"
 
 ###########################
 # UTILITY PERSONALISATION #
@@ -85,7 +85,7 @@ echo "  .__                         __  .__
       \/     \/                  \/           " 
     echo "-- manual 4 $0 cmus --"
     echo ""
-    echo "to use, use the -cmus flag and then -- for a second argument."
+    echo "to use, use the cmus command and then -- for a second argument."
     echo "cmus must be open!!"
     echo ""
     echo "--p <- plays a song"
@@ -109,32 +109,32 @@ echo "  .__                         __  .__
 
     echo "-- manual 4 $0 --"
     echo ""
-    echo "-h <- makes this show up"
-    echo "-cwp <- shuffles wallpaper"
-    echo "-nct <- gets nct"
-    echo "-upd <- updates full system, checks for your package manager"
-    echo "-grab <- gets a package, also checks for your package manager"
-    echo "-lspm <- list supported package managers"
-    echo "-oed <- opens your editor"
-    echo "-tsrc <- opens your editor inside source code of chroctl ( INSIDE YOUR TERMINAL )"
-    echo "-m <- opens your music player"
-    echo "-tcfg <- opens your editor inside your config path"
+    echo "h <- makes this show up"
+    echo "cwp <- shuffles wallpaper"
+    echo "nct <- gets nct"
+    echo "upd <- updates full system, checks for your package manager"
+    echo "grab <- gets a package, also checks for your package manager"
+    echo "lspm <- list supported package managers"
+    echo "oed <- opens your editor"
+    echo "tsrc <- opens your editor inside source code of chroctl ( INSIDE YOUR TERMINAL )"
+    echo "m <- opens your music player"
+    echo "tcfg <- opens your editor inside your config path"
     fi 
     ;;
 
-  -cwp) # change wallpaper 
+  cwp) # change wallpaper 
     notify-send "shuffling walls.."
     cwpimg=$(find "$wallpath" -type f | shuf -n 1)
     swww img "$cwpimg"
     notify-send "changed wallpaper to $cwpimg successfully!"
     ;;
 
-  -nct) # get nct  
+  nct) # get nct  
     notify-send "getting nct function $2.."
     nct "$2" && notify-send "success!"
     ;;
 
-  -grab) # get package
+  grab) # get package
     checkpkg
     shift
     if [[ $# -eq 0 ]]; then
@@ -146,30 +146,30 @@ echo "  .__                         __  .__
     fi 
     ;;
 
-  -upd) # update system 
+  upd) # update system 
     checkpkg
     notify-send "updating system.."
     updsys && notify-send "success!"
     ;;
   
-  -lspm) 
+  lspm) 
     notify-send "supported package managers include: pacman, apt, dnf, zypper, emerge, and xbps"
     echo "supported package managers include: pacman, apt, dnf, zypper, emerge and xbps"
     ;;
 
-  -oed)
+  oed)
     open_editor
     ;;
 
-  -tsrc)
+  tsrc)
     tweak_source
     ;;
 
-  -m)
+  m)
     open_music
     ;; 
 
-  -cmus) # cmus only 
+  cmus) # cmus only 
 
     if ! pgrep -x "cmus" > /dev/null; then
     notify-send "err: cmus isnt running"
@@ -235,7 +235,7 @@ echo "  .__                         __  .__
         ;;
       esac 
     ;;
-  -tcfg)
+  tcfg)
     tweak_config 
     ;;
   *) # fallback 
