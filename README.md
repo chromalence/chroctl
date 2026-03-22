@@ -6,7 +6,7 @@ a minimal C workflow tool (init, run, check, etc.)
 notify-send ( notification daemon, not provided in install.sh as i expect you to have it )
 cmus 
 foot 
-nvim ( apt users, be careful with nvim, might be called neovim. )
+nvim
 swww
 # full install ( recommended ) 
 ```bash
