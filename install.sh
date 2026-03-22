@@ -4,8 +4,11 @@
 
 check_deps() {
   local missing=()
-  for tool in foot cmus nvim; do
+  for tool in foot cmus nvim swww; do
     if ! command -v "$tool" &> /dev/null; then
+      if [[ "$tool" == "nvim" ]] && command -v neovim &> /dev/null; then
+            continue 
+      fi
       missing+=("$tool")
     fi
   done
@@ -16,7 +19,7 @@ check_deps() {
     if command -v pacman &> /dev/null; then
       sudo pacman -S "${missing[@]}"
     elif command -v apt &> /dev/null; then
-      sudo apt install "${missing[@]}" || sudo apt install neovim 
+      sudo apt install "${missing[@]/nvim/neovim}" 
     elif command -v dnf &> /dev/null; then
       sudo dnf install "${missing[@]}"
     elif command -v xbps-install &> /dev/null; then
@@ -40,24 +43,14 @@ check_deps() {
 
 mkdir -p $HOME/.config/chroctl/ 
 
-cat <<EOF > "$HOME/.config/chroctl/chroctl.conf"
-##################
-# chroctl config #
-##################
-term="footclient"
-editor="nvim"
-mplayer="cmus"
-volc=5
-wallpath="\$HOME/walls"
-srcpath="/usr/local/bin/chroctl"
-EOF
-
+cp chroctl.conf ~/.config/chroctl/chroctl.conf
 # dependency check 
 echo "would you like to install hardcoded apps? (y/n)"
 echo "you dont need to, you can just edit them via $HOME/.config/chroctl/chroctl.conf"
 echo "or, if it breaks, edit the source code at /usr/local/bin/chroctl"
 echo ""
-echo "dependency list: foot, cmus, nvim"
+echo "dependency list: foot, cmus, nvim, swww"
+echo "i expect you to already have a notification daemon like dunst, mako or swaync."
 read hcd_input
 
 if [[ $hcd_input == "y" ]]; then   

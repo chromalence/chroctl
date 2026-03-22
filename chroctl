@@ -1,7 +1,7 @@
 #!/usr/bin/env bash 
 # chroctl 
 # monolithic generalist cli tool
-# made by CHROMALENCE, the dumb 12 year old that got into linux.
+# made by CHROMALENCE, the kid that windows made a poweruser.
 # https://github.com/chromalence/
 #        .__                         __  .__   
 #   ____ |  |_________  ____   _____/  |_|  |  
@@ -44,13 +44,13 @@ updsys() {
 }
 
 if command -v pacman >/dev/null; then
-  packagemanager="sudo pacman -S --noconfirm" 
+  packagemanager=(sudo pacman -S --noconfirm)
 elif command -v apt >/dev/null; then
-  packagemanager="sudo apt-get install -y" 
+  packagemanager=(sudo apt-get install -y) 
 elif command -v dnf >/dev/null; then
-  packagemanager="sudo dnf install -y" 
+  packagemanager=(sudo dnf install -y) 
 elif command -v xbps-install >/dev/null; then 
-  packagemanager="sudo xbps-install -y" 
+  packagemanager=(sudo xbps-install -y)
 fi
 
 # standard error command 
@@ -107,8 +107,9 @@ echo "  .__                         __  .__
     echo "-grab <- gets a package, also checks for your package manager"
     echo "-lspm <- list supported package managers"
     echo "-oed <- opens your editor"
-    echo "-tsrc <- opens your editor inside source code of chroctl"
-    echo "-cmus <- cmus specific flags, run chroctl -h --cmus for more info"
+    echo "-tsrc <- opens your editor inside source code of chroctl ( INSIDE YOUR TERMINAL )"
+    echo "-m <- opens your music player"
+    echo "-tcfg <- opens your editor inside your config path"
     fi 
     ;;
 
@@ -131,7 +132,7 @@ echo "  .__                         __  .__
         exit 1
       else 
         notify-send "getting package(s): $@"
-        "$packagemanager" "$@" && notify-send "success!"
+        "${packagemanager[@]}" "$@" && notify-send "success!"
     fi 
     ;;
 
@@ -146,18 +147,15 @@ echo "  .__                         __  .__
     ;;
 
   -oed)
-    notify-send "opening $editor.."
-    "$editor"
+    open_editor
     ;;
 
   -tsrc)
-    notify-send "opening $editor in $srcpath.."
-    "$term" -e sudo "$editor" "$srcpath" && notify-send "success!" # remember to tweak "$term" -e "$editor" if you arent using nvim 
+    tweak_source
     ;;
 
-  -m) 
-    notify-send "launch music player.."
-    "$mplayer"
+  -m)
+    open_music
     ;; 
 
   -cmus) # cmus only 
@@ -168,13 +166,21 @@ echo "  .__                         __  .__
     fi 
     case "$2" in 
       --p) # play
-        cmussong=$(cmus-remote -Q | grep 'tag title' | cut -d ' ' -f 3-)
-        notify-send "now playing: $cmussong"
-        cmus-remote -p
+        cmus-remote -p 
+        if [[ -n "$cmussong" ]]; then
+          notify-send "now playing: " "$cmussong"
+        else
+        cmussong=$(cmus-remote -Q | grep "^file " | sed 's|^file .*/||')
+          notify-send "now playing: " "$cmussong"
+        fi
         ;;
       --dps) # display song
-        cmussong=$(cmus-remote -Q | grep 'tag title' | cut -d ' ' -f 3-)
-        notify-send "playing: $cmussong"
+        if [[ -n "$cmussong" ]]; then
+          notify-send "currently playing: " "$cmussong"
+        else
+        cmussong=$(cmus-remote -Q | grep "^file " | sed 's|^file .*/||')
+          notify-send "currently playing: " "$cmussong"
+        fi
         ;;
       --vol-i) # volume increase 
         cmus-remote -v +$volc% && notify-send "volume increased by $volc%"
@@ -185,14 +191,24 @@ echo "  .__                         __  .__
       --fwd) # forward (next track)
         cmus-remote -n 
         sleep 0.1
-        cmussong=$(cmus-remote -Q | grep 'tag title' | cut -d ' ' -f 3-)
-        notify-send "now playing: $cmussong"
+        if [[ -n "$cmussong" ]]; then
+          notify-send "now playing: " "$cmussong"
+        else
+        cmussong=$(cmus-remote -Q | grep "^file " | sed 's|^file .*/||')
+          notify-send "now playing: " "$cmussong"
+        fi
         ;; 
       --bwd) # backward (previous track)
         cmus-remote -r 
         sleep 0.1
-        cmussong=$(cmus-remote -Q | grep 'tag title' | cut -d ' ' -f 3-)
-        notify-send "now playing: $cmussong"
+        cmussong=$(cmus-remote -Q | sed -n 's/^tag title //p')
+
+        if [[ -n "$cmussong" ]]; then
+          notify-send "now playing: " "$cmussong"
+        else
+        cmussong=$(cmus-remote -Q | grep "^file " | sed 's|^file .*/||')
+          notify-send "now playing: " "$cmussong"
+        fi
         ;;
       --s) # stop
         cmus-remote -s && notify-send "stopped cmus"
@@ -204,9 +220,12 @@ echo "  .__                         __  .__
         cmus-remote -u && notify-send "paused/resumed cmus"
         ;;
       *) # fallback 
-        echo " *** syntax error! *** read $0 -h >cmus"
+        echo " *** syntax error! *** read $0 -h --cmus"
         ;;
       esac 
+    ;;
+  -tcfg)
+    tweak_config 
     ;;
   *) # fallback 
     echo "$regerr"
