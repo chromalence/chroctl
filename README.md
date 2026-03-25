@@ -3,6 +3,7 @@ a monolithic cli generalist tool.
 ## nct
 a minimal C workflow tool (init, run, check, etc.)
 # dependencies 
+( you might not need all of them as some are only for experimental builds )
 libnotify
 cmus 
 foot 
