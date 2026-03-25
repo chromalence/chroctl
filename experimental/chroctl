@@ -267,10 +267,10 @@ echo "  .__                         __  .__
     echo "temp: $temp | ram: $ram"
     ;;
   note)
-    open_note 
+    open_note && notify-send "successfully opened note"
     ;;
   bws) # custom browser 
-    custom_browser
+    custom_browser && notify-send "$browser opened with tabs successfully"
     ;; 
   *) # fallback 
     echo "$regerr"
