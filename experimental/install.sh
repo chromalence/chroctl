@@ -4,7 +4,7 @@
 
 check_deps() {
   local missing=()
-  for tool in foot cmus nvim swww; do
+  for tool in foot cmus neovim swww libnotify firefox; do
     if ! command -v "$tool" &> /dev/null; then
       if [[ "$tool" == "nvim" ]] && command -v neovim &> /dev/null; then
             continue 
@@ -49,8 +49,7 @@ echo "would you like to install hardcoded apps? (y/n)"
 echo "you dont need to, you can just edit them via $HOME/.config/chroctl/chroctl.conf"
 echo "or, if it breaks, edit the source code at /usr/local/bin/chroctl"
 echo ""
-echo "dependency list: foot, cmus, nvim, swww"
-echo "i expect you to already have a notification daemon like dunst, mako or swaync."
+echo "dependency list: foot, cmus, neovim, swww, libnotify, firefox"
 read -r hcd_input
 
 if [[ $hcd_input == "y" ]]; then   
@@ -63,4 +62,4 @@ fi
 
 echo "installing chroctl to /usr/local/bin.."
 sudo install -Dm755 chroctl /usr/local/bin/chroctl
-echo "done. try chroctl -h now"
+echo "done. try chroctl help now"
