@@ -1,5 +1,0 @@
-#!/bin/bash
-# nct clean
-
-rm -rf main &&
-echo "main binary removed!"
