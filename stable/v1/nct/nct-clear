@@ -1,0 +1,13 @@
+#!/bin/bash 
+# nct clear
+
+echo -n "are you sure you want to delete: main.c, main, Makefile? (y/n)"
+read -s -n 1 -r CONFIRM 
+echo 
+
+if [[ "$CONFIRM" == "y" || "$CONFIRM" == "Y" ]]; then
+    rm -f main.c Makefile main
+    echo "files removed!"
+else
+  echo "OwO: ok!"
+fi 

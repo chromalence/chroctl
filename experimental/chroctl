@@ -1,0 +1,278 @@
+#!/usr/bin/env bash 
+# chroctl 
+# monolithic generalist cli tool
+# made by CHROMALENCE
+# https://github.com/chromalence/
+#        .__                         __  .__   
+#   ____ |  |_________  ____   _____/  |_|  |  
+# _/ ___\|  |  \_  __ \/  _ \_/ ___\   __\  |  
+# \  \___|   Y  \  | \(  <_> )  \___|  | |  |__
+#  \___  >___|  /__|   \____/ \___  >__| |____/
+#      \/     \/                  \/     
+# 
+# just a huge case block really
+
+###############################
+# CHECKS FOR PACKAGE MANAGERS #
+###############################
+
+# TIPS FOR THIS SECTION -- 
+# if you want manual confirmation
+# and are not running this in 
+# persay some kind of widget,
+# you can remove these keywords:
+# --noconfirm, --y
+# note that you might still need confirmation for sudo!
+#
+
+releasever="experimental"
+
+updsys() {
+  if command -v pacman >/dev/null; then
+    sudo pacman -Syu --noconfirm
+  elif command -v apt >/dev/null; then
+    sudo apt update && sudo apt upgrade -y
+  elif command -v dnf >/dev/null; then
+    sudo dnf upgrade -y
+  elif command -v xbps-install >/dev/null; then
+    sudo xbps-install -y -u xbps && sudo xbps-install -y -Su
+  elif command -v zypper >/dev/null; then 
+    sudo zypper refresh && sudo zypper dup --no-confirm
+  elif command -v emerge >/dev/null; then  
+    sudo emerge -q --verbose --update --changed-use --deep @world
+  fi
+}
+
+if command -v pacman >/dev/null; then
+  packagemanager=(sudo pacman -S --noconfirm)
+elif command -v apt >/dev/null; then
+  packagemanager=(sudo apt-get install -y) 
+elif command -v dnf >/dev/null; then
+  packagemanager=(sudo dnf install -y) 
+elif command -v xbps-install >/dev/null; then 
+  packagemanager=(sudo xbps-install -y)
+elif command -v emerge >/dev/null; then 
+  packagemanager=(sudo emerge -q -y)
+elif command -v zypper >/dev/null; then 
+  packagemanager=(sudo zypper install -y)
+fi
+
+checkpkg() {
+  if [[ -z "${packagemanager[*]}" ]]; then
+    echo "no supported package manager found"
+    exit 1
+  fi
+}
+
+# standard error command 
+regerr="*** syntax error! *** try $0 h instead"
+
+###########################
+# UTILITY PERSONALISATION #
+###########################
+conf="$HOME/.config/chroctl/chroctl.conf"
+source "$conf"
+ 
+######################
+# THE FAT CASE BLOCK #
+######################
+case "$1" in   
+  help) # help
+    if [[ $2 == "--cmus" ]]; then 
+echo "  .__                         __  .__   
+  ____ |  |_________  ____   _____/  |_|  |  
+ _/ ___\|  |  \_  __ \/  _ \_/ ___\   __\  |  
+ \  \___|   Y  \  | \(  <_> )  \___|  | |  |__
+  \___  >___|  /__|   \____/ \___  >__| |____/
+      \/     \/                  \/           " 
+    echo "-- manual 4 $0 cmus --"
+    echo ""
+    echo "to use, use the cmus command and then -- for a second argument."
+    echo "cmus must be open!!"
+    echo ""
+    echo "--p <- plays a song"
+    echo "--dps <- displays currently playing song via notify-send"
+    echo "--vol-i <- increases volume by volc variable"
+    echo "--vol-d <- same thing as vol-i, but it decreases"
+    echo "--fwd <- goes forward a song"
+    echo "--bwd <- goes back a song"
+    echo "--s <- stops cmus"
+    echo "--q <- quits cmus"
+    echo "--pws <- pauses/resumes cmus"
+    else  
+
+echo "  .__                         __  .__   
+  ____ |  |_________  ____   _____/  |_|  |  
+ _/ ___\|  |  \_  __ \/  _ \_/ ___\   __\  |  
+ \  \___|   Y  \  | \(  <_> )  \___|  | |  |__
+  \___  >___|  /__|   \____/ \___  >__| |____/
+      \/     \/                  \/           "  
+    
+
+    echo "-- manual 4 $0 --"
+    echo ""
+    echo "help <- makes this show up"
+    echo "cwp <- shuffles wallpaper"
+    echo "nct <- gets nct"
+    echo "upd <- updates full system, checks for your package manager"
+    echo "grab <- gets a package, also checks for your package manager"
+    echo "lspm <- list supported package managers"
+    echo "oed <- opens your editor"
+    echo "tsrc <- opens your editor inside source code of chroctl ( INSIDE YOUR TERMINAL )"
+    echo "mp <- opens your music player"
+    echo "tcfg <- opens your editor inside your config path"
+    echo "relver <- release version, experimental or stable"
+    echo "ver <- tells you your primary version ( v1 / v2 etc. )"
+    echo "sys <- shows temperature and memory usage"
+    echo "note <- opens a note in $HOME/notes/ named with the time note was opened"
+    echo "bws <- opens your browser with preferred tabs"
+    fi 
+    ;;
+
+  cwp) # change wallpaper 
+    notify-send "shuffling walls.."
+    cwpimg=$(find "$wallpath" -type f | shuf -n 1)
+    swww img "$cwpimg"
+    notify-send "changed wallpaper to $cwpimg successfully!"
+    ;;
+
+  nct) # get nct  
+    notify-send "getting nct function $2.."
+    nct "$2" && notify-send "success!"
+    ;;
+
+  grab) # get package
+    checkpkg
+    shift
+    if [[ $# -eq 0 ]]; then
+        echo "$regerr"
+        exit 1
+      else 
+        notify-send "getting package(s): $*"
+        "${packagemanager[@]}" "$@" && notify-send "success!"
+    fi 
+    ;;
+
+  upd) # update system 
+    checkpkg
+    notify-send "updating system.."
+    updsys && notify-send "success!"
+    ;;
+  
+  lspm) 
+    notify-send "supported package managers include: pacman, apt, dnf, zypper, emerge, and xbps"
+    echo "supported package managers include: pacman, apt, dnf, zypper, emerge and xbps"
+    ;;
+
+  oed)
+    open_editor
+    ;;
+
+  tsrc)
+    tweak_source
+    ;;
+
+  mp)
+    open_music
+    ;; 
+
+  cmus) # cmus only 
+
+    if ! pgrep -x "cmus" > /dev/null; then
+    notify-send "err: cmus isnt running"
+    exit 1
+    fi 
+    case "$2" in 
+      --p) # play
+        cmus-remote -p 
+        if [[ -n "$cmussong" ]]; then
+          notify-send "now playing: " "$cmussong"
+        else
+        cmussong=$(cmus-remote -Q | grep "^file " | sed 's|^file .*/||')
+          notify-send "now playing: " "$cmussong"
+        fi
+        ;;
+      --dps) # display song
+        if [[ -n "$cmussong" ]]; then
+          notify-send "currently playing: " "$cmussong"
+        else
+        cmussong=$(cmus-remote -Q | grep "^file " | sed 's|^file .*/||')
+          notify-send "currently playing: " "$cmussong"
+        fi
+        ;;
+      --vol-i) # volume increase 
+        cmus-remote -v +$volc% && notify-send "volume increased by $volc%"
+        ;;
+      --vol-d) # volume decrease
+        cmus-remote -v -$volc% && notify-send "volume decreased by $volc%"
+        ;;
+      --fwd) # forward (next track)
+        cmus-remote -n 
+        sleep 0.1
+        if [[ -n "$cmussong" ]]; then
+          notify-send "now playing: " "$cmussong"
+        else
+        cmussong=$(cmus-remote -Q | grep "^file " | sed 's|^file .*/||')
+          notify-send "now playing: " "$cmussong"
+        fi
+        ;; 
+      --bwd) # backward (previous track)
+        cmus-remote -r 
+        sleep 0.1
+        cmussong=$(cmus-remote -Q | sed -n 's/^tag title //p')
+
+        if [[ -n "$cmussong" ]]; then
+          notify-send "now playing: " "$cmussong"
+        else
+        cmussong=$(cmus-remote -Q | grep "^file " | sed 's|^file .*/||')
+          notify-send "now playing: " "$cmussong"
+        fi
+        ;;
+      --s) # stop
+        cmus-remote -s && notify-send "stopped cmus"
+        ;;
+      --q) # quit 
+        pkill cmus && notify-send "quitted cmus"
+        ;; 
+      --pws) # pause / resume
+        cmus-remote -u && notify-send "paused/resumed cmus"
+        ;;
+      *) # fallback 
+        echo " *** syntax error! *** read $0 -h --cmus"
+        ;;
+      esac 
+    ;;
+  tcfg)
+    tweak_config 
+    ;;
+  ping)
+    ping -c 1 -W 2 archlinux.org > /dev/null 2>&1 && notify-send "online" || notify-send "offline"
+    ;;
+  mpp) # have it already inside your /usr/local/bin/ for this to work 
+    chroctl mp && sleep 0.5 && chroctl cmus --p 
+    ;;
+  ver) 
+    notify-send "v1"
+    echo "v1"
+    ;;
+  relver)
+    notify-send "$releasever"
+    echo "$releasever"
+    ;;
+  sys)
+    temp=$(sensors | grep "Package id 0" | awk '{print $4}')
+    ram=$(free -h | awk '/^Mem:/ {print $3 "/" $2}')
+    notify-send "system status" "temp: $temp | ram: $ram"
+    echo "system status"
+    echo "temp: $temp | ram: $ram"
+    ;;
+  note)
+    open_note 
+    ;;
+  bws) # custom browser 
+    custom_browser
+    ;; 
+  *) # fallback 
+    echo "$regerr"
+    ;; 
+esac

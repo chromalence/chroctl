@@ -1,0 +1,12 @@
+#!/bin/bash 
+# nct-check
+
+echo "hi! lemme check ur code here rq.."
+
+clang --analyze -Xanalyzer -analyzer-output=text -Xanalyzer -analyzer-checker=alpha.core main.c
+
+if [ $? -eq 0 ]; then
+    echo "^_^: no (obvious) bugs found!"
+else
+    echo "U_U: ouch, your code has some bugs, but i believe you can fix them! :D"
+fi
