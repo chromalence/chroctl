@@ -27,7 +27,7 @@ chmod +x install.sh chroctl &&
 # install nct
 ```bash
 git clone https://github.com/chromalence/chroctl &&
-cd chroctl &&
+cd chroctl/stable/v1/nct && # if you want the experimental version for nct just change the dir to chroctl/experimental/nct/
 chmod +x install_nct.sh &&
 ./install_nct.sh
 ```
