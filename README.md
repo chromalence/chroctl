@@ -3,15 +3,16 @@ a monolithic cli generalist tool.
 ## nct
 a minimal C workflow tool (init, run, check, etc.)
 # dependencies 
-notify-send ( notification daemon, not provided in install.sh as i expect you to have it )
+libnotify
 cmus 
 foot 
 nvim
 swww
+firefox
 # full install ( recommended ) 
 ```bash
 git clone https://github.com/chromalence/chroctl &&
-cd chroctl &&
+cd chroctl/stable/v1/ && # if you want the experimental version, just replace the dir with chroctl/experimental/
 chmod +x install.sh install_nct.sh chroctl &&
 ./install_nct.sh &&
 ./install.sh 
