@@ -44,6 +44,7 @@ check_deps() {
 mkdir -p "$HOME/.config/chroctl/" 
 
 cp chroctl.conf ~/.config/chroctl/chroctl.conf
+sudo mkdir -p "/usr/local/lib/chroctl/modules"
 # dependency check 
 echo "would you like to install hardcoded apps? (y/n)"
 echo "you dont need to, you can just edit them via $HOME/.config/chroctl/chroctl.conf"

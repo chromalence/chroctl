@@ -25,7 +25,7 @@
 # note that you might still need confirmation for sudo!
 #
 
-releasever="experimental"
+releasever="chroctl (experimental build)"
 
 updsys() {
   if command -v pacman >/dev/null; then
@@ -65,7 +65,7 @@ checkpkg() {
 }
 
 # standard error command 
-regerr="*** syntax error! *** try $0 h instead"
+regerr="*** syntax error! *** try $0 help instead"
 
 ###########################
 # UTILITY PERSONALISATION #
@@ -126,10 +126,12 @@ echo "  .__                         __  .__
     echo "sys <- shows temperature and memory usage"
     echo "note <- opens a note in $HOME/notes/ named with the time note was opened"
     echo "bws <- opens your browser with preferred tabs"
+    echo "mpp <- designed for cmus, opens up your music player and plays"
+    echo "exec <- launches whatever you put after it, and displays a notification of what you launched. useful for scripts with too much notify-send"
     fi 
     ;;
 
-  cwp) # change wallpaper 
+  cwp|change-wall) # change wallpaper 
     notify-send "shuffling walls.."
     cwpimg=$(find "$wallpath" -type f | shuf -n 1)
     swww img "$cwpimg"
@@ -141,7 +143,7 @@ echo "  .__                         __  .__
     nct "$2" && notify-send "success!"
     ;;
 
-  grab) # get package
+  grab|get) # get package
     checkpkg
     shift
     if [[ $# -eq 0 ]]; then
@@ -159,31 +161,30 @@ echo "  .__                         __  .__
     updsys && notify-send "success!"
     ;;
   
-  lspm) 
+  lspm|list-pkgmgr) 
     notify-send "supported package managers include: pacman, apt, dnf, zypper, emerge, and xbps"
     echo "supported package managers include: pacman, apt, dnf, zypper, emerge and xbps"
     ;;
 
-  oed)
+  oed|editor)
     open_editor
     ;;
 
-  tsrc)
+  tsrc|tweak-source)
     tweak_source
     ;;
 
-  mp)
+  mp|music)
     open_music
     ;; 
 
-  cmus) # cmus only 
-
+  cmus) # cmus only, trust me ive tried splitting this into a module  
     if ! pgrep -x "cmus" > /dev/null; then
     notify-send "err: cmus isnt running"
     exit 1
     fi 
     case "$2" in 
-      --p) # play
+      --p|--play) # play
         cmus-remote -p 
         if [[ -n "$cmussong" ]]; then
           notify-send "now playing: " "$cmussong"
@@ -192,7 +193,7 @@ echo "  .__                         __  .__
           notify-send "now playing: " "$cmussong"
         fi
         ;;
-      --dps) # display song
+      --dps|--display-song) # display song
         if [[ -n "$cmussong" ]]; then
           notify-send "currently playing: " "$cmussong"
         else
@@ -206,7 +207,7 @@ echo "  .__                         __  .__
       --vol-d) # volume decrease
         cmus-remote -v -$volc% && notify-send "volume decreased by $volc%"
         ;;
-      --fwd) # forward (next track)
+      --fwd|--forward) # forward (next track)
         cmus-remote -n 
         sleep 0.1
         if [[ -n "$cmussong" ]]; then
@@ -216,7 +217,7 @@ echo "  .__                         __  .__
           notify-send "now playing: " "$cmussong"
         fi
         ;; 
-      --bwd) # backward (previous track)
+      --bwd|--backward) # backward (previous track)
         cmus-remote -r 
         sleep 0.1
         cmussong=$(cmus-remote -Q | sed -n 's/^tag title //p')
@@ -228,34 +229,35 @@ echo "  .__                         __  .__
           notify-send "now playing: " "$cmussong"
         fi
         ;;
-      --s) # stop
+      --s|--stop) # stop
         cmus-remote -s && notify-send "stopped cmus"
         ;;
       --q) # quit 
         pkill cmus && notify-send "quitted cmus"
         ;; 
-      --pws) # pause / resume
+      --pws|--pause) # pause / resume
         cmus-remote -u && notify-send "paused/resumed cmus"
         ;;
       *) # fallback 
-        echo " *** syntax error! *** read $0 -h --cmus"
+        echo " *** syntax error! *** read $0 help --cmus"
         ;;
       esac 
     ;;
-  tcfg)
+  tcfg|tweak-config)
     tweak_config 
     ;;
   ping)
     ping -c 1 -W 2 archlinux.org > /dev/null 2>&1 && notify-send "online" || notify-send "offline"
     ;;
-  mpp) # have it already inside your /usr/local/bin/ for this to work 
-    chroctl mp && sleep 0.5 && chroctl cmus --p 
+  mpp|music-play) 
+    chroctl mp && sleep 0.5 && 
+    chroctl cmus --p 
     ;;
-  ver) 
+  ver|version) 
     notify-send "v1"
     echo "v1"
     ;;
-  relver)
+  relver|release-version)
     notify-send "$releasever"
     echo "$releasever"
     ;;
@@ -269,10 +271,30 @@ echo "  .__                         __  .__
   note)
     open_note && notify-send "successfully opened note"
     ;;
-  bws) # custom browser 
+  bws|browse) # custom browser 
     custom_browser && notify-send "$browser opened with tabs successfully"
-    ;; 
+    ;;
+  exec) # only reason this exists is to stop you from notify-send-ing everything
+    shift
+    notify-send "launching $@.."
+    "$@"
+    ;;
+  mod) # go run your external scripts and be happy!
+    shift
+    plugin_name="$1"
+    shift
+    if [[ -f "$modulepath/$plugin_name" ]]; then
+        source "$modulepath/$plugin_name" "$@"
+    else
+        notify-send "plugin '$plugin_name' not found in $modulepath"
+        echo "err: plugin not found"
+    fi
+    ;;
+  nm|new-mod|em|edit-mod)
+    sudoedit "$modulepath/$2"
+    ;;
+
   *) # fallback 
     echo "$regerr"
-    ;; 
+    ;;
 esac
