@@ -1,9 +1,11 @@
 #!/bin/bash
 # nct init
 
+mkdir -p $1
+cd $1 
 
 if [[ -f main.c || -f Makefile ]]; then
-    echo "X_X: project already initialised, main.c and Makefile detected"
+    echo "X_X: project already initialised, main.c or Makefile detected"
     exit 1
 fi
 
@@ -31,4 +33,4 @@ clean:
 	rm -f main
 EOF
 
-echo "^w^: nathan's c tool finished initialsing. happy coding!"
+echo "^w^: nct finished initialsing. happy coding!"
