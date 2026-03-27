@@ -1,4 +1,5 @@
 # chroctl 
+## CURRENT RECOMMENDED VERSION: experimental
 a monolithic cli generalist tool.
 ## nct
 a minimal C workflow tool (init, run, check, etc.)
