@@ -1,0 +1,8 @@
+# hyprland preset selector
+source "$HOME/.config/chroctl/chroctl.conf"
+
+if command -v kitty >/dev/null 2>&1; then
+  kitty --class kitty-floating -e hypr_theme_select
+else
+  "$term" -e hypr_theme_select
+fi

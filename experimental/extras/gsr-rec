@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+
+pkill -2 -f gpu-screen-recorder
+
+sleep 0.5
+
+gpu-screen-recorder -w screen -f 60 -a default_output -c mp4 -o "$HOME/videos/rec_$(date +%Y-%m-%d_%H%M%S).mp4"
+

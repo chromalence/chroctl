@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# so its prettier.
+clear 
+
+# database, for remembering stuff 
+dbconfdir="$HOME/.config/chroctl"
+fdbname="$dbconfdir/.nav.db"
+mkdir -p "$dbconfdir" && touch "$fdbname"
+
+# a e s t h e t i c s
+c0ffee_text="\x1b[38;5;159m"
+reset="\x1b[0m"
+
+fzf_skin="--color='fg+:#c0ffee,hl:#c0ffee,hl+:#c0ffee,pointer:#c0ffee,info:#c0ffee,border:#c0ffee,prompt:#c0ffee,header:#c0ffee,footer:#666666' --border --reverse --height=12 "
+
+# loading the lil database
+load_config() {
+  mapfile -t paths < "$fdbname"
+  syspath="${paths[0]:-/usr/local/bin/chroctl}"
+  sysmodpath="${paths[1]:-/usr/local/lib/chroctl/modules}"
+  localrepo="${paths[2]:-$HOME/chroctl}"
+}
+
+load_config
+
+while true; do
+  # your choices
+  choice=$(echo -e "1. edit syspath: $syspath\n2. edit modpath: $sysmodpath\n3. browse repo: $localrepo\n4. save & exit\n5. abort" | 
+    eval "fzf $fzf_skin --header='-- chroctl persistent config --' --prompt='select setting > ' --footer='↑/↓: navigate • enter: select • ' ")
+
+  case "$choice" in
+    "1. "*) 
+      echo -ne "${c0ffee_text}new syspath [$syspath]: ${reset}"
+      read -r input
+      syspath="${input:-$syspath}" ;;
+    "2. "*) 
+      echo -ne "${c0ffee_text}new modpath [$sysmodpath]: ${reset}"
+      read -r input
+      sysmodpath="${input:-$sysmodpath}" ;;
+    "3. "*) 
+      new_repo=$(find ~ -maxdepth 3 -type d 2>/dev/null | eval "fzf $fzf_skin --prompt='select local repo > '")
+      localrepo="${new_repo:-$localrepo}" ;;
+    "4. save"*)
+      { echo "$syspath"; echo "$sysmodpath"; echo "$localrepo"; } > "$fdbname"
+      echo -e "${c0ffee_text}db updated. nice${reset}"
+      exit 0 ;;
+    "5. abort" | "") exit 0 ;;
+  esac
+done

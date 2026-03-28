@@ -1,7 +1,7 @@
 #!/usr/bin/env bash 
 # chroctl 
 # monolithic generalist cli tool
-# made by CHROMALENCE
+# made by CHROMALENCE, the kid that windows made a poweruser.
 # https://github.com/chromalence/
 #        .__                         __  .__   
 #   ____ |  |_________  ____   _____/  |_|  |  
@@ -24,8 +24,6 @@
 # --noconfirm, --y
 # note that you might still need confirmation for sudo!
 #
-# region Not Working On {{{
-releasever="chroctl (experimental build)"
 
 updsys() {
   if command -v pacman >/dev/null; then
@@ -44,13 +42,7 @@ updsys() {
 }
 
 if command -v pacman >/dev/null; then
-  if [[ aur == 1 ]]; then 
-  packagemanager=(yay -S) # trust me, you want to confirm 
-  elif [[ aur == 2 ]]; then 
-  packagemanager=(paru -S) # trust me, you also want to confirm 
-  else 
-  packagemanager=(sudo pacman -S --noconfirm) # safe 
-  fi 
+  packagemanager=(sudo pacman -S --noconfirm)
 elif command -v apt >/dev/null; then
   packagemanager=(sudo apt-get install -y) 
 elif command -v dnf >/dev/null; then
@@ -58,7 +50,7 @@ elif command -v dnf >/dev/null; then
 elif command -v xbps-install >/dev/null; then 
   packagemanager=(sudo xbps-install -y)
 elif command -v emerge >/dev/null; then 
-  packagemanager=(sudo emerge -q)
+  packagemanager=(sudo emerge -q -y)
 elif command -v zypper >/dev/null; then 
   packagemanager=(sudo zypper install -y)
 fi
@@ -71,7 +63,7 @@ checkpkg() {
 }
 
 # standard error command 
-regerr="*** syntax error! *** try $0 help instead"
+regerr="*** syntax error! *** try $0 h instead"
 
 ###########################
 # UTILITY PERSONALISATION #
@@ -127,25 +119,10 @@ echo "  .__                         __  .__
     echo "tsrc <- opens your editor inside source code of chroctl ( INSIDE YOUR TERMINAL )"
     echo "mp <- opens your music player"
     echo "tcfg <- opens your editor inside your config path"
-    echo "relver <- release version, experimental or stable"
-    echo "ver <- tells you your primary version ( v1 / v2 etc. )"
-    echo "sys <- shows temperature and memory usage"
-    echo "note <- opens a note in $HOME/notes/ named with the time note was opened"
-    echo "bws <- opens your browser with preferred tabs"
-    echo "mpp <- designed for cmus, opens up your music player and plays"
-    echo "exec <- launches whatever you put after it, and displays a notification of what you launched. useful for scripts with too much notify-send"
-    echo "mod <- launches an external script from your mod dir"
-    echo "nm <- makes a new mod in your mod dir"
-    echo "rmod <- removes a mod in your mod dir"
-    echo "rec <- starts a recording"
-    echo "endrec <- ends a recording"
-    echo "ui-nav <- navigates through your chroctl dirs"
-    echo "ui-nav-setup <- run in installer, used for configuring paths in ui-nav"
-    echo "hypr-preset <- hyprland opacity+blur+corner preset menu"
     fi 
     ;;
 
-  cwp|change-wall) # change wallpaper 
+  cwp) # change wallpaper 
     notify-send "shuffling walls.."
     cwpimg=$(find "$wallpath" -type f | shuf -n 1)
     swww img "$cwpimg"
@@ -153,11 +130,11 @@ echo "  .__                         __  .__
     ;;
 
   nct) # get nct  
-    shift 3 
-    chroctl mod nct "$@"
+    notify-send "getting nct function $2.."
+    nct "$2" && notify-send "success!"
     ;;
 
-  grab|get) # get package
+  grab) # get package
     checkpkg
     shift
     if [[ $# -eq 0 ]]; then
@@ -175,30 +152,31 @@ echo "  .__                         __  .__
     updsys && notify-send "success!"
     ;;
   
-  lspm|list-pkgmgr) 
+  lspm) 
     notify-send "supported package managers include: pacman, apt, dnf, zypper, emerge, and xbps"
     echo "supported package managers include: pacman, apt, dnf, zypper, emerge and xbps"
     ;;
 
-  oed|editor)
+  oed)
     open_editor
     ;;
 
-  tsrc|tweak-source)
+  tsrc)
     tweak_source
     ;;
 
-  mp|music)
+  mp)
     open_music
     ;; 
 
-  cmus) # cmus only, trust me ive tried splitting this into a module  
+  cmus) # cmus only 
+
     if ! pgrep -x "cmus" > /dev/null; then
     notify-send "err: cmus isnt running"
     exit 1
     fi 
     case "$2" in 
-      --p|--play) # play
+      --p) # play
         cmus-remote -p 
         if [[ -n "$cmussong" ]]; then
           notify-send "now playing: " "$cmussong"
@@ -207,7 +185,7 @@ echo "  .__                         __  .__
           notify-send "now playing: " "$cmussong"
         fi
         ;;
-      --dps|--display-song) # display song
+      --dps) # display song
         if [[ -n "$cmussong" ]]; then
           notify-send "currently playing: " "$cmussong"
         else
@@ -221,7 +199,7 @@ echo "  .__                         __  .__
       --vol-d) # volume decrease
         cmus-remote -v -$volc% && notify-send "volume decreased by $volc%"
         ;;
-      --fwd|--forward) # forward (next track)
+      --fwd) # forward (next track)
         cmus-remote -n 
         sleep 0.1
         if [[ -n "$cmussong" ]]; then
@@ -231,7 +209,7 @@ echo "  .__                         __  .__
           notify-send "now playing: " "$cmussong"
         fi
         ;; 
-      --bwd|--backward) # backward (previous track)
+      --bwd) # backward (previous track)
         cmus-remote -r 
         sleep 0.1
         cmussong=$(cmus-remote -Q | sed -n 's/^tag title //p')
@@ -243,99 +221,24 @@ echo "  .__                         __  .__
           notify-send "now playing: " "$cmussong"
         fi
         ;;
-      --s|--stop) # stop
+      --s) # stop
         cmus-remote -s && notify-send "stopped cmus"
         ;;
       --q) # quit 
         pkill cmus && notify-send "quitted cmus"
         ;; 
-      --pws|--pause) # pause / resume
+      --pws) # pause / resume
         cmus-remote -u && notify-send "paused/resumed cmus"
         ;;
       *) # fallback 
-        echo " *** syntax error! *** read $0 help --cmus"
+        echo " *** syntax error! *** read $0 -h --cmus"
         ;;
       esac 
     ;;
-  tcfg|tweak-config)
+  tcfg)
     tweak_config 
-    ;;
-  ping)
-    ping -c 1 -W 2 archlinux.org > /dev/null 2>&1 && notify-send "online" || notify-send "offline"
-    ;;
-  mpp|music-play) 
-    chroctl mp && sleep 0.5 && 
-    chroctl cmus --p 
-    ;;
-  ver|version) 
-    notify-send "v1"
-    echo "v1"
-    ;;
-  relver|release-version)
-    notify-send "$releasever"
-    echo "$releasever"
-    ;;
-  sys)
-    temp=$(sensors | grep "Package id 0" | awk '{print $4}')
-    ram=$(free -h | awk '/^Mem:/ {print $3 "/" $2}')
-    notify-send "system status" "temp: $temp | ram: $ram"
-    echo "system status"
-    echo "temp: $temp | ram: $ram"
-    ;;
-  note)
-    open_note && notify-send "successfully opened note"
-    ;;
-  bws|browse) # custom browser 
-    custom_browser && notify-send "$browser opened with tabs successfully"
-    ;;
-  exec) # only reason this exists is to stop you from notify-send-ing everything
-    shift
-    notify-send "launching $@.."
-    "$@"
-    ;;
-  mod) # go run your external scripts and be happy!
-    shift
-    plugin_name="$1"
-    shift
-    if [[ -f "$modulepath/$plugin_name" ]]; then
-        source "$modulepath/$plugin_name" "$@"
-    else
-        notify-send "plugin '$plugin_name' not found in $modulepath"
-        echo "err: plugin not found"
-    fi
-    ;;
-  nm|new-mod|em|edit-mod)
-    sudoedit "$modulepath/$2"
-    ;;
-  rec|record) # gsr-rec is a custom script i made 
-    notify-send "recording started!" 
-    gsr-rec
-    ;;
-  endrec|end-recording)
-    notify-send "ending recording.."
-    pkill -2 -f gpu-screen-recorder
-    ;;
-  # endregion }}} 
-  rmod|remove-mod)
-    echo "are you sure you want to remove $2? (y/n)"
-    read -s -n 1 -r confirmation_rmod
-    if [[ $confirmation_rmod == 'y' || $confirmation_rmod == 'Y' ]]; then 
-      sudo rm -rf "$modulepath/$2"
-    else 
-      echo "exiting.."
-      exit 0
-    fi 
-    ;;
-  ui-nav|un|navigate)
-    chroctl mod ui-nav 
-    ;;
-  ui-nav-setup|uns)
-    chroctl mod ui-nav-setup 
-    ;;
-  hypr-preset|hyprland-preset|hp)
-    chroctl mod hypr-preset
     ;;
   *) # fallback 
     echo "$regerr"
-    ;;
+    ;; 
 esac

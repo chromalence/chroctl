@@ -1,0 +1,11 @@
+#!/bin/bash 
+# nct help
+
+echo "hi, here's how you use nct:"
+echo "nct init: makes a new dir, initialises project with main.c and Makefile"
+echo "nct help: brings up this message"
+echo "nct clear: removes main, main.c and Makefile"
+echo "nct clean: removes main"
+echo "nct run: makes and runs your binary"
+echo "nct check: checks your code for bugs"
+echo "OwO >> happy coding!"

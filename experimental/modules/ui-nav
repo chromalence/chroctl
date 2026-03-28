@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# just in case, ive put the shebang in 
+
+clear
+
+# aesthetics & config
+dbconfdir="$HOME/.config/chroctl"
+rgconfdir="$HOME/.config/chroctl"
+fdbname="$dbconfdir/.nav.db"
+c0ffee_text="\x1b[38;5;159m"
+reset="\x1b[0m"
+
+# shared fzf skin
+fzf_opts=(
+  --color="fg+:#c0ffee,hl:#c0ffee,hl+:#c0ffee,pointer:#c0ffee,info:#c0ffee,border:#c0ffee,prompt:#c0ffee,header:#c0ffee,footer:#666666"
+  --border --reverse --height=15 --no-info
+)
+
+# 1. load paths from db
+if [[ ! -f "$fdbname" ]]; then
+    echo -e "${c0ffee_text}error: .nav.db not found. run setup first.${reset}"
+    exit 1
+fi
+
+mapfile -t paths < "$fdbname"
+syspath="${paths[0]}"
+modpath="${paths[1]}"
+repo="${paths[2]}"
+
+# 2. pick the directory category
+category=$(echo -e "bin: $syspath\nmodules: $modpath\nrepo: $repo" | 
+  fzf "${fzf_opts[@]}" --header="-- chroctl navigator --" --prompt="go to > " --footer "↑/↓: navigate • enter: select • ")
+
+# 3. extract the actual path from selection
+# splits the string at the first space and takes the second part
+target_dir=$(echo "$category" | awk '{print $2}')
+
+if [[ -z "$target_dir" ]]; then exit 0; fi
+
+# 4. fuzzy find a file in that directory and open in neovim
+# -type f hides directories; -maxdepth 2 keeps it snappy
+file_to_edit=$(find "$target_dir" -maxdepth 2 -not -path '*/.*' 2>/dev/null | 
+  fzf "${fzf_opts[@]}" \
+      --header="-- editing in ${category%%:*} --" \
+      --prompt="open file > " \
+      --preview="[[ -f {} ]] && bat --color=always --style=numbers {} || ls -F {}")
+
+if [[ -n "$file_to_edit" ]]; then
+  if [[ ! -w "$file_to_edit" ]]; then
+    sudoedit "$file_to_edit"
+  else
+    source "$rgconfdir/chroctl.conf"
+    "$editor" "$file_to_edit"
+  fi 
+fi

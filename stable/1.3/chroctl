@@ -24,7 +24,7 @@
 # --noconfirm, --y
 # note that you might still need confirmation for sudo!
 #
-# region Not Working On {{{
+
 releasever="chroctl (experimental build)"
 
 updsys() {
@@ -46,11 +46,11 @@ updsys() {
 if command -v pacman >/dev/null; then
   if [[ aur == 1 ]]; then 
   packagemanager=(yay -S) # trust me, you want to confirm 
-  elif [[ aur == 2 ]]; then 
+else if [[ aur == 2 ]]; then 
   packagemanager=(paru -S) # trust me, you also want to confirm 
-  else 
+else 
   packagemanager=(sudo pacman -S --noconfirm) # safe 
-  fi 
+fi 
 elif command -v apt >/dev/null; then
   packagemanager=(sudo apt-get install -y) 
 elif command -v dnf >/dev/null; then
@@ -58,7 +58,7 @@ elif command -v dnf >/dev/null; then
 elif command -v xbps-install >/dev/null; then 
   packagemanager=(sudo xbps-install -y)
 elif command -v emerge >/dev/null; then 
-  packagemanager=(sudo emerge -q)
+  packagemanager=(sudo emerge -q -y)
 elif command -v zypper >/dev/null; then 
   packagemanager=(sudo zypper install -y)
 fi
@@ -134,14 +134,6 @@ echo "  .__                         __  .__
     echo "bws <- opens your browser with preferred tabs"
     echo "mpp <- designed for cmus, opens up your music player and plays"
     echo "exec <- launches whatever you put after it, and displays a notification of what you launched. useful for scripts with too much notify-send"
-    echo "mod <- launches an external script from your mod dir"
-    echo "nm <- makes a new mod in your mod dir"
-    echo "rmod <- removes a mod in your mod dir"
-    echo "rec <- starts a recording"
-    echo "endrec <- ends a recording"
-    echo "ui-nav <- navigates through your chroctl dirs"
-    echo "ui-nav-setup <- run in installer, used for configuring paths in ui-nav"
-    echo "hypr-preset <- hyprland opacity+blur+corner preset menu"
     fi 
     ;;
 
@@ -153,8 +145,8 @@ echo "  .__                         __  .__
     ;;
 
   nct) # get nct  
-    shift 3 
-    chroctl mod nct "$@"
+    notify-send "getting nct function $2.."
+    nct "$2" && notify-send "success!"
     ;;
 
   grab|get) # get package
@@ -307,34 +299,7 @@ echo "  .__                         __  .__
   nm|new-mod|em|edit-mod)
     sudoedit "$modulepath/$2"
     ;;
-  rec|record) # gsr-rec is a custom script i made 
-    notify-send "recording started!" 
-    gsr-rec
-    ;;
-  endrec|end-recording)
-    notify-send "ending recording.."
-    pkill -2 -f gpu-screen-recorder
-    ;;
-  # endregion }}} 
-  rmod|remove-mod)
-    echo "are you sure you want to remove $2? (y/n)"
-    read -s -n 1 -r confirmation_rmod
-    if [[ $confirmation_rmod == 'y' || $confirmation_rmod == 'Y' ]]; then 
-      sudo rm -rf "$modulepath/$2"
-    else 
-      echo "exiting.."
-      exit 0
-    fi 
-    ;;
-  ui-nav|un|navigate)
-    chroctl mod ui-nav 
-    ;;
-  ui-nav-setup|uns)
-    chroctl mod ui-nav-setup 
-    ;;
-  hypr-preset|hyprland-preset|hp)
-    chroctl mod hypr-preset
-    ;;
+
   *) # fallback 
     echo "$regerr"
     ;;

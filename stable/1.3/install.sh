@@ -4,7 +4,7 @@
 
 check_deps() {
   local missing=()
-  for tool in foot cmus neovim swww libnotify firefox fzf; do
+  for tool in foot cmus neovim swww libnotify firefox; do
     if ! command -v "$tool" &> /dev/null; then
       if [[ "$tool" == "nvim" ]] && command -v neovim &> /dev/null; then
             continue 
@@ -50,7 +50,7 @@ echo "would you like to install hardcoded apps? (y/n)"
 echo "you dont need to, you can just edit them via $HOME/.config/chroctl/chroctl.conf"
 echo "or, if it breaks, edit the source code at /usr/local/bin/chroctl"
 echo ""
-echo "dependency list: foot, cmus, neovim, swww, libnotify, firefox, fzf"
+echo "dependency list: foot, cmus, neovim, swww, libnotify, firefox"
 read -r hcd_input
 
 if [[ $hcd_input == "y" ]]; then   
@@ -63,12 +63,4 @@ fi
 
 echo "installing chroctl to /usr/local/bin.."
 sudo install -Dm755 chroctl /usr/local/bin/chroctl
-echo "installing extras to /usr/local/bin.."
-sudo install -Dm755 extras/* /usr/local/bin/ 
-echo "installing nct tools to /usr/local/bin.."
-sudo install -Dm755 nct/* /usr/local/bin/
-echo "installing modules to /usr/local/lib/chroctl/modules.."
-sudo cp modules/*  /usr/local/lib/chroctl/modules/
-chroctl ui-nav-setup
-echo "done! try chroctl help or chroctl tsrc"
-notify-send "installer done!"
+echo "done. try chroctl help now"

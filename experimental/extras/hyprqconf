@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+confdir="$HOME/.config/hyprqconf"
+config_thing() {
+  mkdir -p "$confdir"
+  touch "$confdir/.status"
+}
+case "$1" in 
+  corner)
+    hyprctl keyword decoration:rounding $2
+    ;;
+  opacity-inactive)
+    hyprctl keyword decoration:inactive_opacity $2 
+    ;;
+  opacity-active)
+    hyprctl keyword decoration:active_opacity $2 
+    ;;
+  opacity-preset)
+    case "$2" in
+      heavy)
+        "$0" opacity-active 0.85
+        "$0" opacity-inactive 0.8
+        ;;
+      std)
+        "$0" opacity-active 0.8
+        "$0" opacity-inactive 0.7 
+        ;;
+      light)
+        "$0" opacity-active 0.55 
+        "$0" opacity-inactive 0.44 
+        ;;
+      opaque) 
+        "$0" opacity-active 1 
+        "$0" opacity-inactive 1
+        ;;
+      *)
+        echo "no"
+	;;
+    esac 
+    ;;
+  blur-passes)
+    hyprctl keyword decoration:blur:passes $2  
+    ;;
+  blur-size)
+    hyprctl keyword decoration:blur:size $2
+    ;;
+  blur-toggle)
+    hyprctl keyword decoration:blur:enabled $2 
+    ;;
+  blur-preset)
+    case "$2" in 
+      std) 
+        "$0" blur-toggle 1
+        "$0" blur-passes 2 
+        "$0" blur-size 8
+        ;; 
+      heavy)
+        "$0" blur-toggle 1
+        "$0" blur-passes 3 
+        "$0" blur-size 12 
+        ;;
+      light)
+        "$0" blur-toggle 1
+        "$0" blur-passes 2 
+        "$0" blur-size 7
+        ;;
+      opaque)
+        "$0" blur-toggle 0 
+        ;;
+      *)
+        echo "no"
+        ;;
+    esac 
+    ;;
+  preset)
+    case "$2" in
+      std)
+	config_thing
+        echo "std" > "$confdir/.status"
+        "$0" opacity-preset std
+        "$0" corner 10 
+        "$0" blur-preset std 
+        ;;
+      heavy)
+	config_thing
+        echo "heavy" > "$confdir/.status"
+        "$0" opacity-preset heavy 
+        "$0" blur-preset heavy
+        "$0" corner 10 
+        ;;
+      light)
+	config_thing
+        echo "light" > "$confdir/.status"
+        "$0" opacity-preset light 
+        "$0" corner 15 
+        "$0" blur-preset light
+        ;;
+      opaque)
+	config_thing
+        echo "opaque" > "$confdir/.status"
+        "$0" opacity-preset opaque 
+        "$0" corner 10
+        "$0" blur-preset opaque
+        ;;
+      current)
+        cat "$confdir/.status"
+        ;;
+      *)
+	echo "no"
+	;;
+    esac
+    ;;
+esac 
