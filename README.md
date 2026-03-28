@@ -1,11 +1,14 @@
 # chroctl 
 ## CURRENT RECOMMENDED VERSION: STABLE 1.3
-why stable 1.3?? well, stable 1.3 still has the new modules feature, but it has been tested more rigorously, experimental is SICK but use with caution because its loads of new features
-are not as well tested. use at ur own risk but if you all about that experimental rolling release, go for it it is awesome dawg. it has cool uis and extra features that are pretty dang useful. also the install script is more integrated which is nice.
+why stable 1.3?? 
+well, stable 1.3 still has the new modules feature, but it has been tested more rigorously.
+experimental is SICK but use with caution because its loads of new features that are not as well tested.
+use at ur own risk but if you all about that experimental rolling release, go for it it is awesome dawg.
+it has cool uis and extra features that are pretty dang useful. also the install script is more integrated which is nice.
 ## short overview
-a monolithic cli generalist tool.
+a monolithic cli generalist tool made by a dev that cares ( i think? )
 ## nct
-a minimal C workflow tool (init, run, check, etc.)
+a tiny C workflow tool (init, run, check, etc.) rarely updated, plugin modular thingy
 # dependencies 
 ( you might not need all of them as some are only for experimental builds )
 libnotify
@@ -17,7 +20,7 @@ firefox
 fzf
 # stable 1.3 install 
 ```bash
-git clone https://github.com/chromalence/chroctl &&
+git clone https://github.com/chromalence/chroctl && 
 cd chroctl/stable/1.3/ &&
 chmod +x install.sh install_nct.sh &&
 ./install_nct.sh
@@ -30,6 +33,21 @@ cd chroctl/experimental &&
 chmod +x install.sh &&
 ./install.sh 
 ```
+## CONTRIBUTING
+so, you want to contribute to chroctl, huh?! well idk how it works i think you fork my project and submit a pull request,
+i review it and see if its good, and maybe accept it. if you do, here are my criteria:
 
+1. if you dont need to, dont directly implement what you put inside the source. what i mean by that?
+   basically, if you want to add a new cool command into chroctl, you dont need to implement it inside
+   of the source code directly, you can just add it into modules/ and in the source code, add a 'hook' or
+   whatever its called for it, such as:
+   your_awesome_command)
+     chroctl mod your_awesome_module
+     ;;
+  instead of directly hard-coding it.
+2. add it to chroctl help!!! pls bro this is 100% required.
+3. dont add COMPLETELY useless features, only i can do that. for example, chroctl run foot ( well, exec does exist, but atleast it sends notifications!! ) is USELESS. you can just go for example: foot. tjat easy.
+
+# have a PHANTASTIC day, friend. u are cool & awesome <3
 
 
