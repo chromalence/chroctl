@@ -1,5 +1,8 @@
 # chroctl 
-## CURRENT RECOMMENDED VERSION: experimental
+## CURRENT RECOMMENDED VERSION: STABLE 1.3
+why stable 1.3?? well, stable 1.3 still has the new modules feature, but it has been tested more rigorously, experimental is SICK but use with caution because its loads of new features
+are not as well tested. use at ur own risk but if you all about that experimental rolling release, go for it it is awesome dawg. it has cool uis and extra features that are pretty dang useful. also the install script is more integrated which is nice.
+## short overview
 a monolithic cli generalist tool.
 ## nct
 a minimal C workflow tool (init, run, check, etc.)
@@ -11,25 +14,22 @@ foot
 nvim
 swww
 firefox
-# full install ( recommended ) 
+fzf
+# stable 1.3 install 
 ```bash
 git clone https://github.com/chromalence/chroctl &&
-cd chroctl/stable/v1/ && # if you want the experimental version, just replace the dir with chroctl/experimental/
-chmod +x install.sh install_nct.sh chroctl &&
-./install_nct.sh &&
+cd chroctl/stable/1.3/ &&
+chmod +x install.sh install_nct.sh &&
+./install_nct.sh
 ./install.sh 
 ```
-# install chroctl
+# experimental install ( use at your own risk )
 ```bash
 git clone https://github.com/chromalence/chroctl &&
-cd chroctl &&
-chmod +x install.sh chroctl &&
-./install.sh
+cd chroctl/experimental &&
+chmod +x install.sh &&
+./install.sh 
 ```
-# install nct
-```bash
-git clone https://github.com/chromalence/chroctl &&
-cd chroctl/stable/v1/nct && # if you want the experimental version for nct just change the dir to chroctl/experimental/nct/
-chmod +x install_nct.sh &&
-./install_nct.sh
-```
+
+
+
