@@ -25,6 +25,8 @@
 # note that you might still need confirmation for sudo!
 #
 
+release_ver="v1.1 (stable)"
+
 updsys() {
   if command -v pacman >/dev/null; then
     sudo pacman -Syu --noconfirm
@@ -119,6 +121,9 @@ echo "  .__                         __  .__
     echo "tsrc <- opens your editor inside source code of chroctl ( INSIDE YOUR TERMINAL )"
     echo "mp <- opens your music player"
     echo "tcfg <- opens your editor inside your config path"
+    echo "ob <- opens your browser with tabs of preference"
+    echo "relver <- shows you your version and release"
+    echo "ver <- shows you your version"
     fi 
     ;;
 
@@ -238,6 +243,14 @@ echo "  .__                         __  .__
   tcfg)
     tweak_config 
     ;;
+  relver)
+    echo "$release_ver"
+    notify-send "$release_ver"
+  ver)
+    echo "v1.1"
+    notify-send "v1.1"
+  ob)
+    "$browser" --new-tab youtube.com --new-tab github.com
   *) # fallback 
     echo "$regerr"
     ;; 
