@@ -39,7 +39,7 @@ ok so you might have installed everything and done your ui-nav-setup, but you ch
 so what this file holds, is what blur+opacity+corner preset you are using. literally just it. so it can be A: std B: heavy C: light or D: opaque
 and if you dont use hyprqconf, you likely will not have it.
 ### .NAV.DB INSIDE .CONFIG/CHROCTL
-all this holds, are the paths to your chroctl stuff. it should contain something like this:
+all this holds, are the paths to your chroctl stuff. it should contain something like this:  
 /usr/local/bin/chroctl  
 /usr/local/lib/chroctl/modules  
 /home/youruser/chroctl  
