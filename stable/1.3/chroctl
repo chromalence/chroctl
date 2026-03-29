@@ -25,7 +25,7 @@
 # note that you might still need confirmation for sudo!
 #
 
-releasever="chroctl (experimental build)"
+releasever="chroctl (stable v1.3 build)"
 
 updsys() {
   if command -v pacman >/dev/null; then
@@ -260,8 +260,8 @@ echo "  .__                         __  .__
     chroctl cmus --p 
     ;;
   ver|version) 
-    notify-send "v1"
-    echo "v1"
+    notify-send "v1.3"
+    echo "v1.3"
     ;;
   relver|release-version)
     notify-send "$releasever"

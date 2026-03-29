@@ -132,6 +132,7 @@ echo "  .__                         __  .__
     echo "sys <- shows temperature and memory usage"
     echo "note <- opens a note in $HOME/notes/ named with the time note was opened"
     echo "bws <- opens your browser with preferred tabs"
+    echo "ping <- pings your internet"
     echo "mpp <- designed for cmus, opens up your music player and plays"
     echo "exec <- launches whatever you put after it, and displays a notification of what you launched. useful for scripts with too much notify-send"
     echo "mod <- launches an external script from your mod dir"
@@ -269,7 +270,7 @@ echo "  .__                         __  .__
     ;;
   ver|version) 
     notify-send "v1"
-    echo "v1"
+    echo "v1.experimental"
     ;;
   relver|release-version)
     notify-send "$releasever"
@@ -307,7 +308,7 @@ echo "  .__                         __  .__
   nm|new-mod|em|edit-mod)
     sudoedit "$modulepath/$2"
     ;;
-  rec|record) # gsr-rec is a custom script i made 
+  rec|record)  
     notify-send "recording started!" 
     gsr-rec
     ;;
