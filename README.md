@@ -62,6 +62,9 @@ i review it and see if its good, and maybe accept it. if you do, here are my cri
 2. add it to chroctl help!!! pls bro this is 100% required.
 3. dont add COMPLETELY useless features, only i can do that. for example, chroctl run foot ( well, exec does exist, but atleast it sends notifications!! ) is USELESS. you can just go for example: foot. tjat easy.
 
+# LICENSE
+GPLv3. if you take my code, make it open source!! ( w/ gplv3 ) 
+
 # have a PHANTASTIC day, friend. u are cool & awesome <3
 
 
