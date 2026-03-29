@@ -23,7 +23,7 @@ fzf
 git clone https://github.com/chromalence/chroctl && 
 cd chroctl/stable/1.3/ &&
 chmod +x install.sh install_nct.sh &&
-./install_nct.sh
+./install_nct.sh &&
 ./install.sh 
 ```
 # experimental install ( use at your own risk )
