@@ -11,13 +11,13 @@ a monolithic cli generalist tool made by a dev that cares ( i think? )
 a tiny C workflow tool (init, run, check, etc.) rarely updated, plugin modular thingy
 # dependencies 
 ( you might not need all of them as some are only for experimental builds )
-libnotify
-cmus 
-foot 
-nvim
-swww
-firefox
-fzf
+libnotify  
+cmus   
+foot   
+nvim  
+swww  
+firefox  
+fzf  
 # stable 1.3 install 
 ```bash
 git clone https://github.com/chromalence/chroctl && 
@@ -40,9 +40,9 @@ so what this file holds, is what blur+opacity+corner preset you are using. liter
 and if you dont use hyprqconf, you likely will not have it.
 ### .NAV.DB INSIDE .CONFIG/CHROCTL
 all this holds, are the paths to your chroctl stuff. it should contain something like this:
-/usr/local/bin/chroctl
-/usr/local/lib/chroctl/modules
-/home/youruser/chroctl
+/usr/local/bin/chroctl  
+/usr/local/lib/chroctl/modules  
+/home/youruser/chroctl  
 
 and you CAN edit these, because in order for ui-nav to work, it has to SEE where to look, and to show you.
 hope this clears the water!!
