@@ -33,6 +33,20 @@ cd chroctl/experimental &&
 chmod +x install.sh &&
 ./install.sh 
 ```
+## QUICK DISCLAIMER
+ok so you might have installed everything and done your ui-nav-setup, but you check your .config/hyprqconf or .config/chroctl, and see some HIDDEN files like .status or .nav.db, which i PROMISE YOU.. are NOT tracking you. go cat them for yourselves, ill explain what both are.
+### .STATUS INSIDE .CONFIG/HYPRQCONF
+so what this file holds, is what blur+opacity+corner preset you are using. literally just it. so it can be A: std B: heavy C: light or D: opaque
+and if you dont use hyprqconf, you likely will not have it.
+### .NAV.DB INSIDE .CONFIG/CHROCTL
+all this holds, are the paths to your chroctl stuff. it should contain something like this:
+/usr/local/bin/chroctl
+/usr/local/lib/chroctl/modules
+/home/youruser/chroctl
+
+and you CAN edit these, because in order for ui-nav to work, it has to SEE where to look, and to show you.
+hope this clears the water!!
+
 ## CONTRIBUTING
 so, you want to contribute to chroctl, huh?! well idk how it works i think you fork my project and submit a pull request,
 i review it and see if its good, and maybe accept it. if you do, here are my criteria:
